@@ -148,7 +148,7 @@ func setupListeners() {
 	for _, listenAddr := range strings.Split(*listenStr, " ") {
 		pa := splitProto(listenAddr)
 
-		if localAuthRequired() && pa.protocol == "" && !unsafe {
+		if localAuthRequired() && pa.protocol == "" && !localUnsafe {
 			log.WithField("address", pa.address).
 				Fatal("Local authentication (via allowed_users file) " +
 					"not allowed with non-TLS listener")
