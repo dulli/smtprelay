@@ -33,6 +33,7 @@ var (
 	localCert        = flagset.String("local_cert", "", "SSL certificate for STARTTLS/TLS")
 	localKey         = flagset.String("local_key", "", "SSL private key for STARTTLS/TLS")
 	localForceTLS    = flagset.Bool("local_forcetls", false, "Force STARTTLS (needs local_cert and local_key)")
+	localUnsafe      = flagset.Bool("local_unsafe", false, "Allow auth without encryption")
 	readTimeoutStr   = flagset.String("read_timeout", "60s", "Socket timeout for read operations")
 	writeTimeoutStr  = flagset.String("write_timeout", "60s", "Socket timeout for write operations")
 	dataTimeoutStr   = flagset.String("data_timeout", "5m", "Socket timeout for DATA command")
@@ -147,7 +148,7 @@ func setupListeners() {
 	for _, listenAddr := range strings.Split(*listenStr, " ") {
 		pa := splitProto(listenAddr)
 
-		if localAuthRequired() && pa.protocol == "" {
+		if localAuthRequired() && pa.protocol == "" && !unsafe {
 			log.WithField("address", pa.address).
 				Fatal("Local authentication (via allowed_users file) " +
 					"not allowed with non-TLS listener")
